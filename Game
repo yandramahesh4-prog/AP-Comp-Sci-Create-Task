@@ -1,0 +1,67 @@
+Field = Rect(0, 0, 400, 400, fill='forestGreen')
+Circle(85, 200, 25, fill=None, border='white')
+Circle(315, 200, 25, fill=None, border='white')
+Rect(50, 135, 50, 130, fill='forestGreen', border='white')
+Rect(300, 135, 50, 130, fill='forestGreen', border='white')
+Line(200, 60, 200, 330, fill='white')
+Circle(200, 200, 25, fill=None, border='white')
+leftGoal = Rect(40, 175, 25, 50, fill='white')
+rightGoal = Rect(340, 175, 25, 50, fill='white')
+Rect(22, 60, 360, 270, fill=None, border = 'white')
+
+app.counter = Label(0,200, 25, fill = 'White', font = 'arial', size = 25)
+
+app.aColor = 'White'
+app.bColor = 'Green'
+app.colorCycle = 0
+
+app.fieldcolors = ['darkGreen', 'lightGreen','green', 'lightyellow']
+
+def getfieldcolors():
+    index = app.colorCycle % len(app.fieldcolors)
+    app.aColor = app.fieldcolors[index]
+    app.bColor = app.fieldcolors[(index + 1) % len(app.fieldcolors)]
+    app.colorCycle += 1
+
+
+ball = Group(
+    Circle(200, 200, 28,fill='White', border='black', borderWidth=2),
+    Polygon(200,190,207,195,205,205,195,205,193,195,fill='black',border='black'),
+    Polygon(180,187,187,185,190,192,185,197,178,195,fill='black',border='black'),
+    Polygon(220,187,213,185,210,192,215,197,222,195,fill='black',border='black'),
+    Polygon(185,220,190,215,195,220,193,227,185,225,fill='black',border='black'),
+    Polygon(215,220,210,215,205,220,207,227,215,225,fill='black',border='black'),
+    )
+    
+Prompt = Label('You Scored!', 100, 25, fill = 'White', font = 'arial', size = 25)
+Prompt.visible = False
+
+app.inGoal = False
+    
+            
+def isInGoal(x, y):
+    if((leftGoal.hits(x, y) or rightGoal.hits(x, y)) and not app.inGoal):
+        app.counter.value += 1
+        app.inGoal = True
+        getfieldcolors()
+        Field.fill = gradient(app.aColor, app.bColor, start = 'right-top')
+        Prompt.visible = True
+        for goal in (leftGoal, rightGoal):
+            if (app.counter.value % 2 == 0):
+                goal.fill = 'white'
+            else:
+                goal.fill = 'black'
+      
+       
+    elif not (leftGoal.hits(x, y) or rightGoal.hits(x, y)):
+        app.inGoal = False
+        Prompt.visible = False
+
+  
+def onMouseMove(mouseX, mouseY):
+    ball.centerX = mouseX
+    ball.centerY = mouseY
+    isInGoal(mouseX, mouseY)
+
+   
+    
